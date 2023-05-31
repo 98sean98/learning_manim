@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+.DS_Store
+.idea/
+
+# output files not suitable for version control
+media/
