@@ -27,3 +27,9 @@ Install pip packages.
 ```shell
 pip install pycairo scipy manim
 ```
+
+Install LaTeX.
+
+```shell
+brew install --cask mactex-no-gui
+```
