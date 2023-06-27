@@ -42,29 +42,20 @@ class BarModelScene(Scene):
 
         bar_group = Group(line, bar_a, bar_b, text_a, text_b)
 
+        # let's do a simple math problem
         self.play(Create(line))
+
+        # Mary and George have some apples
+        self.play(Write(text_a), Write(text_b))
         self.bring_to_back(bar_a, bar_b)
         self.play(Create(bar_a), Create(bar_b))
-        self.play(AddTextLetterByLetter(text_a), AddTextLetterByLetter(text_b))
 
         self.wait()
 
-        self.play(Indicate(bar_a, color=bar_a.get_color()))
-
-        self.wait()
-
+        # they have 23 apples in total
         brace_total = Brace(bar_group, direction=RIGHT, buff=MED_LARGE_BUFF)
-        self.play(FadeIn(brace_total))
-
-        self.wait()
-
         brace_text = MyText("23", color=GREEN).next_to(brace_total, RIGHT)
-        self.play(FadeIn(brace_text))
-        self.play(
-            Indicate(brace_text, color=GREEN),
-            Indicate(bar_a, color=bar_a.get_color()),
-            Indicate(bar_b, color=bar_b.get_color()),
-        )
+        self.play(FadeIn(brace_total), FadeIn(brace_text))
 
         self.wait()
 
@@ -84,6 +75,7 @@ class BarModelScene(Scene):
 
         text_a_split = MyText("5", color=GREEN).move_to(bar_a_2.get_center())
 
+        # Mary has 5 apples more than George
         self.play(Create(line_a_split), FadeIn(text_a_split))
 
         self.add(bar_a_2, bar_a_1)
@@ -92,14 +84,32 @@ class BarModelScene(Scene):
 
         self.wait()
 
+        text_b_question = MyText("?").move_to(bar_b.get_center())
+
+        # How many apples does George have?
+        self.play(FadeIn(text_b_question))
+
+        self.wait()
+
+        self.play(FadeOut(text_b_question))
+
         text_a_1_part = MyText("1 part").move_to(bar_a_1.get_center())
         text_b_1_part = MyText("1 part").move_to(bar_b.get_center())
 
+        # We start by labelling the equal parts between Mary and George
+        self.play(Indicate(bar_a_1), Indicate(bar_b)) # labelling the equal parts
+        # as 1 part each
         self.play(
-            AddTextLetterByLetter(text_a_1_part), AddTextLetterByLetter(text_b_1_part)
+            Write(text_a_1_part), Write(text_b_1_part)
         )
 
         self.wait()
+
+        # So Mary has 1 part + 5 apples
+        group_a = Group(bar_a_1, bar_a_2, text_a_1_part, text_a_split)
+        self.play(Indicate(group_a)) # this might not work
+        # whereas George only has 1 part
+        self.play(Indicate(bar_b), Indicate(text_b_1_part))
 
         text_calc_1_part_1 = MyText("1 part = ")
         text_calc_1_part_2 = MyText("?").next_to(text_calc_1_part_1, RIGHT)
@@ -107,20 +117,22 @@ class BarModelScene(Scene):
             bar_group, DOWN, buff=LARGE_BUFF
         )
 
-        self.play(AddTextLetterByLetter(text_calc_1_part_1))
-        self.play(AddTextLetterByLetter(text_calc_1_part_2))
+        # Then we find out how many apples are in 1 part
+        self.play(Write(text_calc_1_part_1))
+        self.play(Write(text_calc_1_part_2))
 
         self.wait()
 
-        brace_text_split = MyText("- 5", color=YELLOW).next_to(
+        brace_text_split = MyText("- 5", color=PURPLE).next_to(
             brace_text, RIGHT, buff=SMALL_BUFF
         )
         brace_text_result = MyText("18", color=GREEN).next_to(brace_total, RIGHT)
 
+        # We do this by subtracting 5 apples from the total of 23
         self.play(
-            FadeToColor(bar_a_2, YELLOW),
-            FadeToColor(text_a_split, YELLOW),
-            AddTextLetterByLetter(brace_text_split),
+            FadeToColor(bar_a_2, PURPLE),
+            FadeToColor(text_a_split, PURPLE),
+            Write(brace_text_split),
         )
 
         self.wait()
@@ -133,10 +145,11 @@ class BarModelScene(Scene):
 
         self.wait()
 
+        # Now, a total of 2 parts
         self.play(
-            Indicate(bar_a_1, color=bar_a_1.get_color()),
-            Indicate(bar_b, color=bar_b.get_color()),
-            Indicate(brace_text_result, color=GREEN),
+            Indicate(bar_a_1),
+            Indicate(bar_b),
+            Indicate(brace_text_result),
         )
 
         self.wait()
@@ -145,9 +158,9 @@ class BarModelScene(Scene):
             bar_group, DOWN, buff=LARGE_BUFF
         )
 
+        # is equal to 18 apples
         self.play(text_calc_1_part_group.animate.shift(DOWN))
-
-        self.play(AddTextLetterByLetter(text_calc_2_part))
+        self.play(Write(text_calc_2_part))
 
         self.wait()
 
@@ -155,10 +168,15 @@ class BarModelScene(Scene):
             text_calc_1_part_2.get_center()
         )
 
-        self.play(FadeOut(text_calc_1_part_2), FadeIn(text_calc_1_part_3))
+        # We divide 18 apples into 2 equal parts to get 9 apples for each part
+        self.play(FadeOut(text_calc_1_part_2), FadeIn(text_calc_1_part_3, scale=2.0))
 
         self.wait()
 
+        group_b = Group(bar_b, text_b, text_b_1_part)
+        group_calc = Group(text_calc_1_part_1, text_calc_1_part_3)
+
+        # Therefore, George, who has 1 part
         self.play(
             FadeOut(
                 line,
@@ -168,14 +186,9 @@ class BarModelScene(Scene):
                 brace_total,
                 brace_text_result,
                 text_calc_2_part,
-            )
+            ),
         )
-
-        self.wait()
-
-        group_b = Group(bar_b, text_b, text_b_1_part)
-        group_calc = Group(text_calc_1_part_1, text_calc_1_part_3)
-
+        # has 9 apples
         self.play(
             group_b.animate.move_to(ORIGIN),
             group_calc.animate.move_to(ORIGIN).shift(DOWN * 2),
@@ -185,6 +198,7 @@ class BarModelScene(Scene):
 
         text_b_final = MyText("9", color=GREEN).move_to(text_b_1_part.get_center())
 
+        # And the problem is solved
         self.play(FadeOut(group_calc, text_b_1_part), FadeIn(text_b_final))
 
         self.wait()
