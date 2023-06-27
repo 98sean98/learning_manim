@@ -3,6 +3,7 @@ from abc import ABC
 from manim import *
 from manim_voiceover import VoiceoverScene
 from manim_voiceover.services.gtts import GTTSService
+from manim_voiceover.services.recorder import RecorderService
 
 
 class MyText(Text, ABC):
@@ -13,7 +14,8 @@ class MyText(Text, ABC):
 
 class BarModelScene(VoiceoverScene):
     def construct(self):
-        self.set_speech_service(GTTSService(lang="en", transcription_model="base"))
+        # self.set_speech_service(GTTSService(lang="en", transcription_model="base"))
+        self.set_speech_service(RecorderService())
 
         height = 1
         width_ratio = 0.3
